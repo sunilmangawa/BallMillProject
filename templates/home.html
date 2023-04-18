@@ -1,0 +1,69 @@
+<!-- templates/home.html -->
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock title %}
+
+{% block content %}
+{% comment %} {% if user.is_authenticated %} {% endcomment %}
+{% comment %} Hi {{ user.username }}! Your Mobile No. is {{user.mobile}} 
+<p><a href="{% url 'logout' %}">Log Out</a></p> {% endcomment %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1>Ball Mill Automation Solution Provider using IoT</h1>
+            <p>Control and monitor your ball mill process from anywhere, anytime using our state-of-the-art automation solution. Our solution puts data and control at your fingertips via mobile or website, allowing you to make informed decisions quickly and easily.</p>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Real-time Data Monitoring</h4>
+                </div>
+                <div class="card-body">
+                    <p>Our automation solution provides real-time data monitoring of your ball mill process, allowing you to identify and resolve issues quickly and efficiently.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Remote Control and Monitoring</h4>
+                </div>
+                <div class="card-body">
+                    <p>Our solution allows you to remotely control and monitor your ball mill process from anywhere, anytime, using a mobile device or website.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Data Analysis and Reporting</h4>
+                </div>
+                <div class="card-body">
+                    <p>Our automation solution provides powerful data analysis and reporting capabilities, allowing you to make informed decisions quickly and easily.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4>User-friendly Interface</h4>
+                </div>
+                <div class="card-body">
+                    <p>Our solution features a user-friendly interface that is easy to navigate, allowing you to focus on what matters most: your ball mill process.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+{% comment %} {% else %}
+    <p>You are not logged in</p>
+    <a href="{% url 'login' %}">Log In</a> |
+    <a href="{% url 'signup' %}">Sign Up</a> {% endcomment %}
+{% comment %} {% endif %} {% endcomment %}
+{% endblock content %}

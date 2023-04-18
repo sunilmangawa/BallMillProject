@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ company.name }}</h1>
+  {% if devices %}
+    <h2>Devices</h2>
+    <ul>
+      {% for device in devices %}
+        {% comment %} <li><a href="{% url 'device_detail' company_pk=company.pk pk</span>=device.pk %}">{{ device.name }}</a></li> {% endcomment %}
+        <li><a href="">{{ device.name }}w</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>This company doesn't have any devices yet.</p>
+  {% endif %}
+{% endblock %}

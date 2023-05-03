@@ -1,17 +1,20 @@
 {% extends 'base.html' %}
 {% comment %} {% load templatetags %}
 {% load division_filters %} {% endcomment %}
+{% load static %}
+<script src="{% static 'dashboard_auto_reload.js' %}"></script>
 {% block content %}
-  <h1>Dashboard</h1>
+<div class="device" data-device-id="{{ device.pk }}"></div>
+  <!-- <h1>Dashboard</h1> -->
   {% if company_devices_data %}
     <h2>Your Companies</h2>
-    <div class="container">
+    <div class="container" style="max-width: 100%; background-color:#37474F;">
       <div class="row">
         {% for company_data in company_devices_data %}
           <div class="col-12 col-md-6 col-lg-4 mb-4">
             <div class="card">
-              <div class="card-body">
-                <h3 class="card-title">{{ company_data.company.name }}</h3>
+              <div class="card-body" style="background-color:#ECEFF1;">
+                <h3 class="card-title" style="text-align: center;">{{ company_data.company.name }}</h3>
                 <ul class="list-group list-group-flush">
                   {% for device_data in company_data.devices_data %}
                     <li class="list-group-item">
@@ -32,4 +35,5 @@
   {% else %}
     <p>You don't have any companies yet.</p>
   {% endif %}
+</div>  
 {% endblock %}

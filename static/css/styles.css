@@ -1,0 +1,52 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.hero {
+    height: 100vh;
+    background: url('/static/images/hero.jpg') no-repeat center center/cover;
+}
+
+.carousel-item {
+    height: 50vh;
+    background: no-repeat center center/cover;
+}
+.carousel-caption {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.carousel-img {
+    max-width: 100%;
+    height: auto;
+}
+
+.services .card-img-top,
+.plans .card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.customers .img-fluid,
+.team .img-fluid {
+    max-height: 150px;
+    object-fit: cover;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.small-logo {
+    width: 20px; /* change this value to suit your needs */
+    height: 20px; /* keeps the aspect ratio of the image */
+    max-width: 50px!important;; /* change this value to suit your needs */
+    max-height: 50px!important;; /* keeps the aspect ratio of the image */
+}
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+}

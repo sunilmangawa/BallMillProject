@@ -7,7 +7,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-og$0ubxfp77p!+f0e*&nv10ecu75i+ao7s#dkukpznj-$uw=nk'
+# SECRET_KEY = 'django-insecure-og$0ubxfp77p!+f0e*&nv10ecu75i+ao7s#dkukpznj-$uw=nk'
+SECRET_KEY = 'django-insecure--x!1l)49bsc(4s2)4)$wd@lg@5pm14s@!kup7+cw0as(&a17b4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -26,9 +27,8 @@ INSTALLED_APPS = [
 
     # New Apps
     'accounts.apps.AccountsConfig', # new
-    'pages.apps.PagesConfig', # new
     'blog.apps.BlogConfig', # new
-    'milldata.apps.MilldataConfig',
+    'devicedata.apps.DevicedataConfig',
 
 
     # Third party apps
@@ -82,32 +82,12 @@ DATABASES = {
 '''
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': '/etc/mysql/my.cnf',
-        },
-    }
-}
-
-# [client]
-# database = ballmillautoDB
-# user = coder
-# password = str(#Brahma4coder)
-# default-character-set = utf8
-# END
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ballmillautoDB',
-        'USER': 'coder',
-        'PASSWORD': '#Brahma4coder',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'Brahma4@coder',
         'HOST': 'localhost',
-        'PORT': '',
-        'OPTIONS': {
-            'charset': 'utf8mb4', 
-            'init_command': "SET time_zone='+05:30';",
-        },
+        'PORT': '5432',
     }
 }
 

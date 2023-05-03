@@ -34,6 +34,8 @@ from datetime import datetime
 from fpdf import FPDF
 import datetime
 from .permissions import IsSuperUserOrStaff
+from collections import deque
+from django.http import JsonResponse
 
 class IsSuperUserOrStaff(permissions.BasePermission):
     """
@@ -114,18 +116,18 @@ class DashboardView(generic.TemplateView):
                 device_data = {}
                 milldata_today = Milldata.objects.filter(device=device, katta_time__date=today.date())
 
-                print(f"Device: {device.name}")
-                print(f"Today: {today.date()}")
-                print(f"Milldata count: {milldata_today.count()}")
-                print("Milldata items:")
-                for item in milldata_today:
-                    print(f"  {item.katta_time}")
+                # print(f"Device: {device.name}")
+                # print(f"Today: {today.date()}")
+                # print(f"Milldata count: {milldata_today.count()}")
+                # print("Milldata items:")
+                # for item in milldata_today:
+                #     print(f"{item.katta_time}")
 
                 total_bags = milldata_today.count()
 
                 adjusted_duration = 0
                 # Apply the 300-second condition
-                for i in range(1, total_bags):
+                for i in range(1, total_bags+1):
                     time_diff = (milldata_today[i].katta_time - milldata_today[i - 1].katta_time).total_seconds()
                     if time_diff <= 300:
                         adjusted_duration += time_diff
@@ -215,7 +217,10 @@ class DeviceDetailView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         device = self.object
-
+        L5 = deque(maxlen=5)
+        L10 = deque(maxlen=10)
+        L15 = deque(maxlen=15)
+        L20 = deque(maxlen=20)
         # Get today's date in local timezone
         today = timezone.localtime(timezone.now())
         start_date, end_date, milldata_today, total_bags, average_time = get_device_data(self.request, device) #new
@@ -232,8 +237,11 @@ class DeviceDetailView(generic.DetailView):
             if i <= 1:
                 time_diff = 120.00
                 fill_time = 120.00
+            elif 1<i<3:
+                time_diff = round((current_data.katta_time - milldata_today[i - 2].katta_time).total_seconds(),2)
+                fill_time = round((current_data.katta_time - milldata_today[i - 2].katta_time).total_seconds(),2)
             else:
-                time_diff = (current_data.katta_time - milldata_today[i - 1].katta_time).total_seconds()
+                time_diff = round((current_data.katta_time - milldata_today[i - 2].katta_time).total_seconds(),2)
                 fill_time = round((current_data.katta_time - milldata_today[i - 2].katta_time).total_seconds(),2)
             
             if time_diff > 300:
@@ -243,26 +251,44 @@ class DeviceDetailView(generic.DetailView):
                 machine_on_time.append(time_diff)
             else:
                 machine_on_time.append(time_diff)
+            if i ==1:
+                total_time = 120
+            elif i ==2:
+                total_time = (current_data.katta_time - milldata_today[0].katta_time).total_seconds()+120
+            else:
+                total_time = (current_data.katta_time - milldata_today[0].katta_time).total_seconds()
+            # fill_time = round((current_data.katta_time - milldata_today[i - 2].katta_time).total_seconds(),2)
+            
+            # Update lists
+            L5.append(time_diff)
+            L10.append(time_diff)
+            L15.append(time_diff)
+            L20.append(time_diff)
 
-            total_time = (current_data.katta_time - milldata_today[0].katta_time).total_seconds()
             total_adjusted_time = 0
-
             for j in range(1, i):
-                time_diff = (milldata_today[j].katta_time - milldata_today[j - 1].katta_time).total_seconds()
+                if i==1:
+                    time_diff=120
+                else:
+                    time_diff = (milldata_today[j].katta_time - milldata_today[j - 1].katta_time).total_seconds()
                 if time_diff > 300:
                     adjusted_time_diff = time_diff - 120
                     total_adjusted_time += adjusted_time_diff
 
             adjusted_total_time = total_time - total_adjusted_time
             if adjusted_total_time > 0:
-                avg_with_bag = (i / adjusted_total_time) * 3600
+                if i==1:
+                    avg_with_bag = (i / 120) * 3600
+                else:
+                    avg_with_bag = (i / adjusted_total_time) * 3600
             else:
                 avg_with_bag = 0
 
             current_data.avg_per_hour = avg_with_bag
 
 
-            current_data.fill_time = fill_time  # Add time_diff value to current_data object
+            current_data.fill_time = fill_time  # Add time_diff value to current_data objects
+            # current_data.fill_time = time_diff  # Add time_diff value to current_data object
             current_data.reversed_index = reversed_index
             #milldata_with_avg.append(current_data)
             milldata_with_avg.insert(0, current_data)  # Insert at the beginning of the list
@@ -279,9 +305,20 @@ class DeviceDetailView(generic.DetailView):
 
 
         #To calculate Average Time to show at top
-        avg_time = sum(machine_on_time) / total_bags if total_bags > 0 else 0
+        avg_time = sum(machine_on_time) / total_bags if total_bags >= 1 else 0
         avg_per_hour = 3600 / avg_time if avg_time > 0 else 0
-        
+        # avg_per_hour = (3600 / avg_time)*2 if avg_time > 0 else 0
+
+        # Calculate averages
+        # avg_L5 = sum(L5) / len(L5) if L5 else 0
+        # avg_L10 = sum(L10) / len(L10) if L10 else 0
+        # avg_L15 = sum(L15) / len(L15) if L15 else 0
+        # avg_L20 = sum(L20) / len(L20) if L20 else 0
+        avg_L5 = 3600/(sum(L5) / len(L5)) if L5 else 0
+        avg_L10 = 3600/(sum(L10) / len(L10)) if L10 else 0
+        avg_L15 = 3600/(sum(L15) / len(L15)) if L15 else 0
+        avg_L20 = 3600/(sum(L20) / len(L20)) if L20 else 0
+
         # Calculation ofr predicted bags
         remaining_hours = 24 - today.hour
         predicted_bags_remaining = remaining_hours * avg_per_hour
@@ -298,14 +335,18 @@ class DeviceDetailView(generic.DetailView):
         #milldata_with_avg.reverse()
 
         context['total_bags'] = total_bags
-        context['average_time'] = avg_time
-        context['average_per_hour'] = avg_per_hour
-        context['predicted_bags_today'] = predicted_bags_today
+        context['average_time'] = avg_time/2
+        context['average_per_hour'] = avg_per_hour*2
+        context['predicted_bags_today'] = int(predicted_bags_today)
         #new context
         context['start_date'] = start_date
         context['end_date'] = end_date
         # context['milldata_today'] = milldata_with_avg
         context['milldata_paged'] = milldata_paged        
+        context['avg_L5'] = avg_L5
+        context['avg_L10'] = avg_L10
+        context['avg_L15'] = avg_L15
+        context['avg_L20'] = avg_L20
 
         return context
 

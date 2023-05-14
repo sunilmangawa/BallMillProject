@@ -1,9 +1,12 @@
 import requests
 import json
 
-API_URL = "http://ballmillautomation.com/milldata/device/"
-USERNAME = "testuser1"
-PASSWORD = "Test4work"
+API_URL = "http://localhost:8000/devicedata/device/"
+USERNAME = "sunilmangawa"
+PASSWORD = "#Brahma4coder"
+# API_URL = "http://ballmillautomation.com/milldata/device/"
+# USERNAME = "testuser1"
+# PASSWORD = "Test4work"
 DEVICE_ID = "1"
 
 def fetch_device_data(device_id):

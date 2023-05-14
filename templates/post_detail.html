@@ -1,10 +1,17 @@
-<!-- templates/post_detail.html -->
 {% extends "base.html" %}
 {% block content %}
-<div class="post-entry">
-    <h2>{{ post.title }}</h2>
-    <p class="date">Published {{ post.publish }} by {{ post.author }}</p>
-
-    <p>{{ post.body }}</p>
+<div class="container mt-4">
+    <div class="card">
+        {% if post.image %}
+            <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}">
+        {% endif %}
+        <div class="card-header">
+            <h2 class="card-title">{{ post.title }}</h2>
+            <p class="card-subtitle text-muted">Published {{ post.publish }} by {{ post.author }}</p>
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{ post.body }}</p>
+        </div>
+    </div>
 </div>
 {% endblock content %}

@@ -1,29 +1,33 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                {% for post in post_list %}
-                    <div class="post-entry mb-4">
-                        <h2><a href="{% url 'post_detail' post.slug %}">{{ post.title }}</a></h2>
-                        {% if post.image %}
-                            <div class="mb-3">
-                                <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid">
-                            </div>
-                        {% endif %}
-                        <p class="date">Published {{ post.publish }} by {{ post.author }}</p>
-                        <p>{{ post.body|truncatewords:30|linebreaks }}</p>
-                    </div>
-                {% endfor %}
-                {% include "pagination.html" with page=posts %}
+<div class="container py-5" style="margin-top: 1em;">
+    <div class="row">
+        <div class="col-lg-8">
+            {% for post in post_list %}
+            <div class="card mb-4">
+                {% if post.image %}
+                    <img class="card-img-top" src="{{ post.image.url }}" alt="{{ post.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h2 class="card-title"><a href="{% url 'post_detail' post.slug %}" class="text-decoration-none text-dark">{{ post.title }}</a></h2>
+                    <p class="card-text">{{ post.body|truncatewords:30 }}</p>
+                    <p class="card-subtitle text-muted">Published {{ post.publish }} by {{ post.author }}</p>
+                </div>
             </div>
-            <div class="col-md-4">
-                <div id="sidebar" class="sticky-top" style="top: 1rem;">
-                    <h2>My blog</h2>
-                    <p>This is my blog.</p>
+            {% endfor %}
+            {% include "pagination.html" with page=posts %}
+        </div>
+        <div class="col-lg-4">
+            <div class="sticky-top pt-4" style="top: 1rem;">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title">My blog</h2>
+                        <p class="card-text">This is my blog.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock content %}

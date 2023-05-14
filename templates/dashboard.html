@@ -2,27 +2,37 @@
 {% comment %} {% load templatetags %}
 {% load division_filters %} {% endcomment %}
 {% load static %}
+
 <script src="{% static 'dashboard_auto_reload.js' %}"></script>
 {% block content %}
-<div class="device" data-device-id="{{ device.pk }}"></div>
+
+<div class="device" data-device-id="{{ device.pk }}" style="padding-top:5%;"></div>
   <!-- <h1>Dashboard</h1> -->
   {% if company_devices_data %}
     <h2>Your Companies</h2>
-    <div class="container" style="max-width: 100%; background-color:#37474F;">
+    <div class="container-fluid bg-dark text-white" style="padding: 30px;">
       <div class="row">
         {% for company_data in company_devices_data %}
-          <div class="col-12 col-md-6 col-lg-4 mb-4">
-            <div class="card">
-              <div class="card-body" style="background-color:#ECEFF1;">
-                <h3 class="card-title" style="text-align: center;">{{ company_data.company.name }}</h3>
+          <div class="col-lg-12 col-md-12">
+            <div class="card bg-light">
+              <div class="card-body">
+                <h2 class="card-title text-center text-success container-fluid">{{ company_data.company.name }}</h2>
                 <ul class="list-group list-group-flush">
                   {% for device_data in company_data.devices_data %}
                     <li class="list-group-item">
-                      <a href="{% url 'device_detail' company_id=company_data.company.pk pk=device_data.device.pk %}">{{ device_data.device.name }}</a><br>
-                      Total Bag Number: {{ device_data.total_bags }}<br>
-                      Average Time: {{ device_data.average_time|floatformat:2 }} seconds<br>
-                      Average of Bags: {{ device_data.average_only|floatformat:2 }}<br>                    
-                      {% comment %} Average of Bags: {{ 3600|divide:device_data.average_per_hour|floatformat:2 }}<br>                     {% endcomment %}
+                      <div class="card text-center bg-light" >
+                        <span style="color: green;"><i class="fas fa-2x fa-microchip"></i></span>
+                        <!-- <img src="{%static '/images/cpu.svg'%}" class="card-img" width="32" height="32"  alt="..."> -->
+                        <div class="card-body bg-dark">
+                          <h3 class="card-title text-white">{{ device_data.device.name }}</h3>
+                          <p class="card-text">
+                            <span style="color: white; font-weight: 600;">Total Bag Number: {{ device_data.total_bags }}</span><br>
+                            <span style="color: white;  font-weight: 600;">Average Time: {{ device_data.average_time|floatformat:2 }} seconds</span><br>
+                            <span style="color: white;  font-weight: 600;">Average of Bags: {{ device_data.average_only|floatformat:2 }}</span><br>                    
+                              </p>
+                          <a href="{% url 'device_detail' company_id=company_data.company.pk pk=device_data.device.pk %}" class="btn btn-primary">Check Details</a>
+                        </div>
+                      </div>
                     </li>
                   {% endfor %}
                 </ul>
@@ -32,6 +42,9 @@
         {% endfor %}
       </div>
     </div>
+
+
+    
   {% else %}
     <p>You don't have any companies yet.</p>
   {% endif %}

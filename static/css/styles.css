@@ -1,7 +1,9 @@
 body {
     font-family: Arial, sans-serif;
-}
-
+    padding: 20px;
+    background: #f1f1f1;
+    }
+    
 .hero {
     height: 100vh;
     background: url('/static/images/hero.jpg') no-repeat center center/cover;
@@ -35,11 +37,15 @@ body {
     object-fit: cover;
 }
 
+/* Footer */
 .footer {
     position: absolute;
-    bottom: 0;
+    padding: 20px;
+    text-align: center;
+    background: #ddd;
+    margin-top: 20px;
     width: 100%;
-}
+    }
 
 .small-logo {
     width: 20px; /* change this value to suit your needs */
@@ -50,3 +56,92 @@ body {
 .shadow-sm {
     box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
 }
+
+.device-card {
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    background-color: white;
+    width: 100%;
+}
+
+.device-list {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: 20px;
+}
+
+.device-item {
+border: 1px solid #ccc;
+border-radius: 5px;
+width: 100%;
+max-width: 400px;
+padding: 10px;
+}
+
+.device-item a {
+font-weight: bold;
+font-size: 1.2rem;
+color: #333;
+text-decoration: none;
+}
+
+.device-info {
+display: flex;
+flex-wrap: wrap;
+justify-content: space-between;
+margin-top: 10px;
+}
+
+.device-info-item {
+display: flex;
+align-items: center;
+margin-bottom: 5px;
+}
+
+.device-info-label {
+font-weight: bold;
+margin-right: 5px;
+}
+
+.device-info-value {
+color: #333;
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+.device-item {
+    max-width: 768px;
+    }
+}
+
+/* .navbar-dark .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+} */
+
+
+/* .form-check-input:checked {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important; 
+}
+
+.form-check-input:checked:disabled {
+    background-color: #28a745 !important;
+}
+
+.form-check-input:not(:disabled):active {
+    background-color: #c82333 !important;
+    border-color: #c82333 !important;
+} */
+
+/* .form-check-input:checked {
+    background-color: #28a745 !important; 
+    border-color: #28a745 !important;
+}
+
+.form-check-input:not(:checked) {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+} */
+
+/*  */

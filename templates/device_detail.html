@@ -20,6 +20,18 @@
       </div>
     </div>
     <div class="col-md-6">
+      <!-- Link to other Devices -->
+      <div class="bg-light p-4 rounded mb-4">
+          <div class="d-flex flex-wrap justify-content-start">
+              {% for company_data in company_devices_data %}
+                  {% for device_data in company_data.devices_data %}
+                      <a href="{% url 'device_detail' company_id=device_data.device.company.pk pk=device_data.device.pk %}" class="btn btn-primary m-2">{{ device_data.device.name }}</a>
+                  {% endfor %}
+              {% endfor %}
+          </div>
+      </div>
+    </div>
+                  
       <div class="bg-light p-4 rounded mb-4">
         <!-- Show device details and a button to edit feeding parameters -->
         <h2>Device Details</h2>
@@ -34,7 +46,6 @@
         </ul>
         <button class="btn btn-danger mb-3" onclick="location.href='{% url 'edit_feeding' object.pk %}'">Edit Feeding</button>
       </div>
-
       <!-- Date range picker form and export options -->
       <div class="bg-light p-4 rounded mb-4">
         <h2>Select Dates to check production data:</h2>

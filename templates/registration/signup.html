@@ -6,10 +6,19 @@
 {% block title %}Sign Up{% endblock title %}
 
 {% block content %}
-<h2>Sign Up</h2>
-<form method="post">{% csrf_token %}
-    {% comment %} {{ form.as_p }} {% endcomment %}
-    {{ form|crispy }}
-    <button class="btn btn-success" type="submit">Sign Up</button>
-</form>
+    <h2 style="padding-top: 2em;">Sign Up</h2>
+    {% if user.is_anonymous %}
+        <form method="post" style="padding-bottom: 5em;">{% csrf_token %}
+            {% comment %} {{ form.as_p }} {% endcomment %}
+            {{ form|crispy }}
+            <button class="btn btn-success" type="submit">Sign Up</button>
+        </form>
+    {% else %}
+        <h5>{{ user.username }}! You are already logged In.</h5>
+        <h4>If you are our ballmillautomation product customer, Click Dashboard else Blog</h4>
+        <div class="container position-relative text-center text-light" data-aos="fade-up" data-aos-delay="500"">
+            <a href="{% url 'dashboard' user.pk %}" class="btn btn-success btn-lg">Dashboard</a>
+            <a href="{% url 'blog' %}" class="btn btn-success btn-lg">Blog</a>
+        </div>
+    {% endif %}
 {% endblock content %}

@@ -42,6 +42,7 @@ class Device(models.Model):
     overload_hold = models.IntegerField(default=2100)
     galla_vibrator_status = models.BooleanField(default=True)
     hopper_vibrator_status = models.BooleanField(default=True)
+    extra_time_hold = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name

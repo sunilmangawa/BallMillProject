@@ -138,6 +138,12 @@ STATIC_URL = '/python/static/'
 STATIC_ROOT = '/usr/local/lsws/Example/html/webapp/static'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+MEDIA_URL = '/python/media/'
+MEDIA_ROOT = '/usr/local/lsws/Example/html/webapp/media'
+
+# MEDIA_URL = 'media/'
+# MEDIA_ROOT = BASE_DIR / 'media'
+
 AUTH_USER_MODEL = "accounts.CustomUser" # new
 
 # LOGIN_URL = "login"

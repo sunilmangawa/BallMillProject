@@ -1,7 +1,7 @@
 {% extends "blog/base.html" %}
-{% block title %}My Blog{% endblock %}
+{% block title %}Blogs{% endblock %}
 {% block content %}
-    <h1>My Blog</h1>
+    <h1 style="margin-top: 2em;">My Blog</h1>
     {% for post in posts %}
         <h2>
             {% comment %} <a href="{% url 'blog:post_detail' post.id %}">{{ post.title }}</a> {% endcomment %}

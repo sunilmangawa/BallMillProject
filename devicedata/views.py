@@ -27,16 +27,19 @@ from reportlab.lib.pagesizes import letter, landscape, portrait
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 import xlsxwriter
-from datetime import datetime
+# from datetime import datetime
 from django.core.paginator import Paginator
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta, time
 from fpdf import FPDF
-import datetime
+# import datetime
 from .permissions import IsSuperUserOrStaff
 from collections import deque
 from django.http import JsonResponse
 import pytz
+import csv
+from itertools import chain
+
 class IsSuperUserOrStaff(permissions.BasePermission):
     """
     Custom permission to only allow superusers or staff members to access the create functionality.
@@ -109,17 +112,26 @@ class DashboardView(generic.TemplateView):
         today = timezone.localtime(timezone.now())
         company_devices_data = []
 
+        # Fetch all devices for the current user's companies in one query
+        devices = Device.objects.select_related('company').filter(company__in=companies)
+
+        # Fetch all milldata for the current user's devices in one query
+        all_milldata_today = Milldata.objects.filter(device__in=devices, katta_time__date=today.date())
+        all_milldata_previous_day = Milldata.objects.filter(device__in=devices, katta_time__date=today.date() - timedelta(days=1))
+
+        now = timezone.localtime(timezone.now())
+        today_date = now.date()
+        morning_start_time = timezone.make_aware(datetime.combine(today_date, time(7, 0)))  # 7:00 AM of today
+        evening_start_time = timezone.make_aware(datetime.combine(today_date, time(19, 0)))  # 19:00 of today
+
         for company in companies:
-            devices = Device.objects.filter(company=company)
             devices_data = []
-            for device in devices:
+            for device in devices.filter(company=company):
                 device_data = {}
-                milldata_today = Milldata.objects.filter(device=device, katta_time__date=today.date())
-
-                total_bags = milldata_today.count()
-
+                milldata_today = [data for data in all_milldata_today if data.device_id == device.id]
+                total_bags = len(milldata_today)
                 adjusted_duration = 0
-                # Apply the 300-second condition
+
                 for i in range(total_bags):
                     if i == 0:
                         time_diff = 120
@@ -132,6 +144,53 @@ class DashboardView(generic.TemplateView):
 
                 avg_time = adjusted_duration / total_bags if total_bags > 0 else 0
                 avg_only = (3600/avg_time) if total_bags >0 else 0
+
+                milldata_previous_day = [data for data in all_milldata_previous_day if data.device_id == device.id]
+
+   
+                if evening_start_time <= now < (morning_start_time + timedelta(days=1)):# Evening Shift (7:00) to Midnight (12:00)
+                    morning_shift_start = morning_start_time
+                    morning_shift_end = evening_start_time
+                    evening_shift_start = evening_start_time
+                    evening_shift_end = now
+
+                    morning_shift_data_today = [data for data in milldata_today if morning_shift_start <= data.katta_time <= morning_shift_end]
+                    evening_shift_data_today = [data for data in milldata_today if evening_shift_start <= data.katta_time <= evening_shift_end]
+                    morning_shift_data_previous_day = []
+                    evening_shift_data_previous_day = []
+
+                elif (evening_start_time - timedelta(days=1)) <= now < morning_start_time: # After 12:00 Midnight to 7:00 Morning Shift
+                    morning_shift_start = (morning_start_time - timedelta(days=1))
+                    morning_shift_end = (evening_start_time - timedelta(days=1))
+                    evening_shift_start = (evening_start_time - timedelta(days=1))
+                    evening_shift_end = morning_start_time
+
+                    morning_shift_data_today = []
+                    morning_shift_data_previous_day = [data for data in milldata_previous_day if morning_shift_start <= data.katta_time <= morning_shift_end]
+                    evening_shift_data_today = []
+                    evening_shift_data_previous_day_part1 = [data for data in milldata_previous_day if evening_shift_start <= data.katta_time <= timezone.make_aware(datetime.combine(today_date, time(0, 0)))]
+                    evening_shift_data_today_part2 = [data for data in milldata_today if timezone.make_aware(datetime.combine(today_date, time(0, 0))) <= data.katta_time <= morning_start_time]
+                    evening_shift_data_previous_day = list(chain(evening_shift_data_previous_day_part1, evening_shift_data_today_part2))
+
+                else:
+                    if morning_start_time <= now < evening_start_time: # Morning Shift (7:00) to Evening Shift 
+                        morning_shift_start = morning_start_time  # 7:00 AM of  today
+                        morning_shift_end = evening_start_time  # 19:00 of today
+                        evening_shift_start = (evening_start_time - timedelta(days=1))
+                        evening_shift_end = morning_start_time
+
+                        morning_shift_data_today = [data for data in milldata_today if morning_shift_start <= data.katta_time <= morning_shift_end]
+                        morning_shift_data_previous_day = []
+                        evening_shift_data_today = [data for data in milldata_today if timezone.make_aware(datetime.combine(today_date, time(0, 0))) <= data.katta_time <= morning_shift_start]
+
+                        evening_shift_data_previous_day = [data for data in milldata_previous_day if evening_shift_start <= data.katta_time <= timezone.make_aware(datetime.combine(today_date, time(6, 59)))]
+                morning_shift_data = list(chain(morning_shift_data_previous_day, morning_shift_data_today))
+                evening_shift_data = list(chain(evening_shift_data_previous_day, evening_shift_data_today))
+
+                morning_total_bags = len(morning_shift_data)
+                evening_total_bags = len(evening_shift_data)                
+                device_data['morning_shift'] = morning_total_bags
+                device_data['evening_shift'] = evening_total_bags
                 device_data['device'] = device
                 device_data['total_bags'] = total_bags
                 device_data['average_time'] = avg_time
@@ -142,6 +201,7 @@ class DashboardView(generic.TemplateView):
 
         context['company_devices_data'] = company_devices_data
         return context
+
 
 class CompanyDashboardView(generic.TemplateView):
     template_name = 'company_dashboard.html'
@@ -208,6 +268,7 @@ class EditFeedingView(LoginRequiredMixin, generic.UpdateView):
 
         # Redirect to the dashboard view with the primary key
         return HttpResponseRedirect(reverse('dashboard', args=[company_pk]))
+
 class DeviceDetailView(generic.DetailView):
     model = Device
     template_name = 'device_detail.html'
@@ -337,7 +398,12 @@ class DeviceDetailView(generic.DetailView):
         #new context
         context['start_date'] = start_date
         context['end_date'] = end_date
-        context['milldata_paged'] = milldata_paged        
+        context['milldata_paged'] = milldata_paged
+        # context['milldata_today'] = milldata_today[0]
+        if milldata_today:      
+            context['milldata_today'] = milldata_today[0]        
+        else:
+            context['milldata_today'] = [0]        
         context['avg_L5'] = avg_L5
         context['avg_L10'] = avg_L10
         context['avg_L15'] = avg_L15

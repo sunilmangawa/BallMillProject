@@ -29,7 +29,9 @@
                             <span style="color: white; font-weight: 600;">Total Bag Number: {{ device_data.total_bags }}</span><br>
                             <span style="color: white;  font-weight: 600;">Average Time: {{ device_data.average_time|floatformat:2 }} seconds</span><br>
                             <span style="color: white;  font-weight: 600;">Average of Bags: {{ device_data.average_only|floatformat:2 }}</span><br>                    
-                              </p>
+                            <span style="color: white;  font-weight: 600;">MorningShift Bags: {{ device_data.morning_shift}}</span><br>                    
+                            <span style="color: white;  font-weight: 600;">EveningShift Bags: {{ device_data.evening_shift}}</span><br>                    
+                          </p>
                           <a href="{% url 'device_detail' company_id=company_data.company.pk pk=device_data.device.pk %}" class="btn btn-primary">Check Details</a>
                         </div>
                       </div>

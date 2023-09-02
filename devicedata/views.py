@@ -417,8 +417,8 @@ def get_device_data(request, device):
     end_date_str = request.GET.get('end_date')
 
     if start_date_str and end_date_str:
-        start_date_naive = datetime.datetime.strptime(start_date_str, '%Y-%m-%d')
-        end_date_naive = datetime.datetime.strptime(end_date_str, '%Y-%m-%d') + datetime.timedelta(days=1, seconds=-1)
+        start_date_naive = datetime.strptime(start_date_str, '%Y-%m-%d')
+        end_date_naive = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1, seconds=-1)
 
         # Make the start and end dates timezone-aware
         local_tz = pytz.timezone('Asia/Kolkata')

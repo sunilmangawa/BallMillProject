@@ -6,49 +6,65 @@
 <script src="{% static 'dashboard_auto_reload.js' %}"></script>
 {% block content %}
 
-<div class="device" data-device-id="{{ device.pk }}" style="padding-top:5%;"></div>
-  <!-- <h1>Dashboard</h1> -->
+<div class="container-fluid bg-dark text-white" style="padding: 30px;">
   {% if company_devices_data %}
-    <h2>Your Companies</h2>
-    <div class="container-fluid bg-dark text-white" style="padding: 30px;">
-      <div class="row">
-        {% for company_data in company_devices_data %}
-          <div class="col-lg-12 col-md-12">
-            <div class="card bg-light">
-              <div class="card-body">
-                <h2 class="card-title text-center text-success container-fluid">{{ company_data.company.name }}</h2>
-                <ul class="list-group list-group-flush">
-                  {% for device_data in company_data.devices_data %}
-                    <li class="list-group-item">
-                      <div class="card text-center bg-light" >
-                        <span style="color: green;"><i class="fas fa-2x fa-microchip"></i></span>
-                        <!-- <img src="{%static '/images/cpu.svg'%}" class="card-img" width="32" height="32"  alt="..."> -->
-                        <div class="card-body bg-dark">
-                          <h3 class="card-title text-white">{{ device_data.device.name }}</h3>
-                          <p class="card-text">
-                            <span style="color: white; font-weight: 600;">Total Bag Number: {{ device_data.total_bags }}</span><br>
-                            <span style="color: white;  font-weight: 600;">Average Time: {{ device_data.average_time|floatformat:2 }} seconds</span><br>
-                            <span style="color: white;  font-weight: 600;">Average of Bags: {{ device_data.average_only|floatformat:2 }}</span><br>                    
-                            <span style="color: white;  font-weight: 600;">MorningShift Bags: {{ device_data.morning_shift}}</span><br>                    
-                            <span style="color: white;  font-weight: 600;">EveningShift Bags: {{ device_data.evening_shift}}</span><br>                    
-                          </p>
-                          <a href="{% url 'device_detail' company_id=company_data.company.pk pk=device_data.device.pk %}" class="btn btn-primary">Check Details</a>
-                        </div>
-                      </div>
-                    </li>
-                  {% endfor %}
-                </ul>
+    <div class="row">
+      {% for company_data in company_devices_data %}
+        <div class="col">
+          <div class="p-3" style="background-color: darkslategray;">
+            <h2 class="text-center text-white">{{ company_data.company.name }}</h2>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      {% for company_data in company_devices_data %}
+        {% for device_data in company_data.devices_data %}
+          <div class="col">
+            <div class="bg-light p-3">
+              <div class="text-center text-black">
+                <span style="color: green;"><i class="fas fa-2x fa-microchip"></i></span>
+                <h3>{{ device_data.device.name }}</h3><hr>
+                <!-- <p>
+                  <span style="font-weight: 600; text-align: left;">Total Bag (00:00 To 24:00 ):</span> <span style="font-weight: 900; color: rgb(60, 116, 7); text-align: right;"> {{ device_data.total_bags }}</span><br>
+                  <span style="font-weight: 600; text-align: left;">Average Time: {{ device_data.average_time|floatformat:2 }} seconds</span><br>
+                  <span style="font-weight: 600;">Average of Bags: {{ device_data.average_only|floatformat:2 }}</span><br>
+                  <span style="font-weight: 600;">MorningShift ({{ company_data.company.morning_shift_start_time }} To {{ company_data.company.evening_shift_start_time }}) Bags: {{ device_data.morning_shift}} </span><br>
+                  <span style="font-weight: 600;">EveningShift ({{ company_data.company.evening_shift_start_time }} To {{ company_data.company.morning_shift_start_time }}) Bags:   {{ device_data.evening_shift}} </span><br>
+                </p> -->
+                <table style="border: none; width: 100%;">
+                  <tr>
+                    <td><span style="font-weight: 600;">Today's Bag <sapn style="font-weight: 100;">(00:00 To 24:00)</sapn>:</span></td>
+                    <td><span style="font-weight: 900; color: rgb(60, 116, 7);">{{ device_data.total_bags }}</span></td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-weight: 600;">Average Time <sapn style="font-weight: 100;">(in seconds)</sapn>:</span></td>
+                    <td><span style="font-weight: 900; color: rgb(60, 116, 7);">{{ device_data.average_time|floatformat:2 }} </span></td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-weight: 600;">Average of Bags <sapn style="font-weight: 100;">(in seconds)</sapn>:</span></td>
+                    <td><span style="font-weight: 900; color: rgb(60, 116, 7);">{{ device_data.average_only|floatformat:2 }}</span></td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-weight: 600;">MorningShift <sapn style="font-weight: 100;">({{ company_data.company.morning_shift_start_time }} To {{ company_data.company.evening_shift_start_time }})</sapn> Bags:</span></td>
+                    <td><span style="font-weight: 900; color: rgb(60, 116, 7);">{{ device_data.morning_shift}}</span></td>
+                  </tr>
+                  <tr>
+                    <td><span style="font-weight: 600;">EveningShift <sapn style="font-weight: 100;">({{ company_data.company.evening_shift_start_time }} To {{ company_data.company.morning_shift_start_time }})</sapn> Bags:</span></td>
+                    <td><span style="font-weight: 900; color: rgb(60, 116, 7);">{{ device_data.evening_shift}}</span></td>
+                  </tr>
+                </table>
+                <!-- <h4>Average of last:<br>L5 = {{avg_L5|floatformat:2 }}<br>L10 = {{avg_L10|floatformat:2 }}<br>L15 = {{avg_L15|floatformat:2 }}<br>L20 = {{avg_L20|floatformat:2 }}<br></h4> -->
+                <a href="{% url 'device_detail' company_id=company_data.company.pk pk=device_data.device.pk %}" class="btn btn-primary">Check Details</a>
               </div>
             </div>
           </div>
         {% endfor %}
-      </div>
+      {% endfor %}
     </div>
-
-
-    
   {% else %}
     <p>You don't have any companies yet.</p>
   {% endif %}
-</div>  
+</div>
+
 {% endblock %}

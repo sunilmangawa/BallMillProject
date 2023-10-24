@@ -55,7 +55,7 @@ class Login_View(TemplateView):
         if request.user.is_authenticated:
             companies = Company.objects.filter(owner=request.user)
             if companies.count() >= 1:
-                return redirect(reverse('/devicedata/dashboard', kwargs={'pk': request.user.pk}))
+                return redirect(reverse('dashboard', kwargs={'pk': request.user.pk}))
             else:
                 return redirect(reverse('blog'))
         else:

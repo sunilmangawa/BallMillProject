@@ -1,6 +1,8 @@
 # milldata/models.py
 from django.db import models
 from django.contrib.auth import get_user_model
+from datetime import time
+
 class Company(models.Model):
     STATUS_CHOICES = (
         ('active', 'Active'),
@@ -17,6 +19,8 @@ class Company(models.Model):
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     contract_start_date = models.DateField(null=True, blank=True)
     contract_end_date = models.DateField(null=True, blank=True)
+    morning_shift_start_time = models.TimeField(default=time(7, 0))
+    evening_shift_start_time = models.TimeField(default=time(19, 0))
     
     def __str__(self):
         return self.name

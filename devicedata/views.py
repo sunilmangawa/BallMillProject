@@ -121,11 +121,15 @@ class DashboardView(generic.TemplateView):
 
         now = timezone.localtime(timezone.now())
         today_date = now.date()
-        morning_start_time = timezone.make_aware(datetime.combine(today_date, time(7, 0)))  # 7:00 AM of today
-        evening_start_time = timezone.make_aware(datetime.combine(today_date, time(19, 0)))  # 19:00 of today
 
         for company in companies:
             devices_data = []
+            morning_shift_start_time = company.morning_shift_start_time
+            evening_shift_start_time = company.evening_shift_start_time
+
+            morning_start_time = timezone.make_aware(datetime.combine(today_date, morning_shift_start_time))
+            evening_start_time = timezone.make_aware(datetime.combine(today_date, evening_shift_start_time))
+
             for device in devices.filter(company=company):
                 device_data = {}
                 milldata_today = [data for data in all_milldata_today if data.device_id == device.id]

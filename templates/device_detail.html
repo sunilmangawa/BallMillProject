@@ -17,6 +17,10 @@
         <h3>Predicted Bags Today</h3>
         <p class="fs-3">{{ predicted_bags_today }}</p><hr>
         <h4>Average of last:<br>L5 = {{avg_L5|floatformat:2 }}<br>L10 = {{avg_L10|floatformat:2 }}<br>L15 = {{avg_L15|floatformat:2 }}<br>L20 = {{avg_L20|floatformat:2 }}<br></h4>
+        <!-- <h3>Feed Status</h3>
+        <p class="fs-3">{{ milldata_today.feed_status }}</p>
+        <h3>Overload Status</h3>
+        <p class="fs-3">{{ milldata_today.overload_status }}</p> -->
       </div>
     </div>
     <div class="col-md-6">
@@ -24,14 +28,12 @@
       <div class="bg-light p-4 rounded mb-4">
         <div>
           <h3>Feed Status</h3>
-          <p class="fs-3" style="color:{{ milldata_today.feed_status|yesno:'red,green' }}">{{ milldata_today.feed_status|yesno:'Yes,No' }}</p>
+          <p class="fs-3" style="color:{{ milldata_today.feed_status|yesno:'red,green' }}">{{ milldata_today.feed_status|yesno:'ON,OFF' }}</p>
           <h3>Overload Status</h3>
           <p class="fs-3" style="color:{{ milldata_today.overload_status|yesno:'red,green' }}">{{ milldata_today.overload_status|yesno:'Yes,No' }}</p>
         </div><hr>
         <div class="d-flex flex-wrap justify-content-start">
-          <div>
-            <h3>Switch Device</h3>
-          </div>
+          <h3>Switch Device</h3>
           <div>
             {% for company_data in company_devices_data %}
                 {% for device_data in company_data.devices_data %}

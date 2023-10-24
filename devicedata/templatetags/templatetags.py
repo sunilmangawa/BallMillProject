@@ -20,6 +20,9 @@ def querystring(request, **kwargs):
             updated.pop(k, None)
     return updated.urlencode()
 
+@register.filter
+def max_value(value, arg):
+    return max(value, arg)
 
 # @register.filter
 # def divide(value, arg):
